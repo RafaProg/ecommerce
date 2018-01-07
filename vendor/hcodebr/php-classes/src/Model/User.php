@@ -16,7 +16,7 @@ class User extends Model
         $sql = new Sql();
         
         $result = $sql->select('SELECT * FROM tb_users WHERE deslogin = :LOGIN', [
-            ':login'=>$login
+            ':LOGIN'=>$login
         ]);
         
         if (count($result) === 0) {
@@ -34,7 +34,7 @@ class User extends Model
             
             $_SESSION[User::SESSION] = $user->getValues();
             
-            return $data;
+            return $user;
             
         } else {
         
@@ -51,9 +51,9 @@ class User extends Model
                 ||
                 !$_SESSION[User::SESSION]
                 ||
-                !(int)$_SESSION[User::SESSION]['inadmin'] !== $inadmin
+                !(int)$_SESSION[User::SESSION]["iduser"] > 0
                 ||
-                $_SESSION[User::SESSION]['inadmin'] !== $inadmin
+                (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin
             ){
             
                 header("Location: /admin/login");
@@ -66,6 +66,8 @@ class User extends Model
     {
         
         session_unset($_SESSION[User::SESSION]);
+        
+        User::loginVerify();
         
     }
     
